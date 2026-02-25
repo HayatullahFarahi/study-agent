@@ -1,4 +1,4 @@
-# Agentic Learning Flow (ALF)
+# Agentic Learning Flow
 
 A Copilot-powered personal learning system that tracks your progress across books, courses, and slide decks — session by session.
 
