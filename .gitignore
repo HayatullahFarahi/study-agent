@@ -1,0 +1,16 @@
+# ─── study-agent ────────────────────────────────────────────────────────────
+# Raw learning materials (PDFs, PPTs, ZIPs) — kept local only
+learning-materials/
+
+# Copilot progress tracking state — local only
+temp/
+
+# ─── Common ──────────────────────────────────────────────────────────────────
+.dist/
+node_modules/
+.env
+.env.local
+.env*.local
+*.log
+.DS_Store
+Thumbs.db
