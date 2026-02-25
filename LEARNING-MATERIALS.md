@@ -28,7 +28,7 @@ learning-materials/
 2. Drop your files in
 3. Use the slash command in Copilot Chat:
    ```
-   /register <name>
+   /add-material <name>
    ```
 4. Copilot creates `temp/progress/<slug>/manifest.json`, `session-log.md`, and `spotlight-log.md` automatically
 5. Paste the Table of Contents when prompted — Copilot populates `structure[]` and sets `totalUnits`
@@ -52,7 +52,7 @@ temp/progress/<slug>/            ← progress tracking (gitignored)
 |---|---|
 | `manifest.json` | Source of truth — progress, structure, concepts, questions |
 | `session-log.md` | Chronological log of all tracked sessions |
-| `spotlight-log.md` | Log of standalone spotlight sessions |
+| `spotlight-log.md` | Log of standalone deep-dive sessions |
 
 ---
 
@@ -60,5 +60,5 @@ temp/progress/<slug>/            ← progress tracking (gitignored)
 
 | Type | Command | Saves to |
 |---|---|---|
-| **Tracked** | `/start`, `/resume` | `manifest.json` + `session-log.md` |
-| **Spotlight** | `/spotlight` | `spotlight-log.md` only (no progress change) |
+| **Tracked** | `/start-study`, `/resume` | `manifest.json` + `session-log.md` |
+| **Deep Dive** | `/deep-dive` | `spotlight-log.md` only (no progress change) |

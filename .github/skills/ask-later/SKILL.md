@@ -1,5 +1,5 @@
 ---
-name: q
+name: ask-later
 description: Log a question to revisit later, saving it to the material's pendingQuestions array. Use when the user has a question they don't want to lose but want to continue studying. Also triggered by phrases like "remember this question" or "ask later".
 argument-hint: <question text> [in <material-slug>]
 ---

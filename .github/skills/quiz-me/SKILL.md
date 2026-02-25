@@ -1,5 +1,5 @@
 ---
-name: quiz
+name: quiz-me
 description: Quiz the user on a registered learning material based on what they have covered so far. Generates 5 mixed-type questions (MCQ, short-answer, explain-in-own-words). Can be scoped to a specific unit. Use when the user wants to test their knowledge or review a material.
 argument-hint: <material-slug> [unit: <unit-id>]
 ---

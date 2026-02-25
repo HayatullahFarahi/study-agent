@@ -1,5 +1,5 @@
 ---
-name: register
+name: add-material
 description: Register a new learning material (book, course, slides, or article) into the study-agent tracking system. Use this when the user wants to add a new book, course, slide deck, or article to track. Creates manifest.json, session-log.md, and spotlight-log.md for the material.
 argument-hint: <material-name> [type: book|course|slides|article]
 ---

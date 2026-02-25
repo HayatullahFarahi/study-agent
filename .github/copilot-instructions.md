@@ -13,13 +13,13 @@ You operate via **slash-command skill modes**. Every user interaction begins wit
   .github/
     copilot-instructions.md    ← this file (must stay at workspace root)
     skills/                    ← agent skills — one subdirectory per slash command
-      register/SKILL.md
-      start/SKILL.md
-      spotlight/SKILL.md
-      quiz/SKILL.md
-      progress/SKILL.md
-      note/SKILL.md
-      q/SKILL.md
+      add-material/SKILL.md
+      start-study/SKILL.md
+      deep-dive/SKILL.md
+      quiz-me/SKILL.md
+      check-progress/SKILL.md
+      save-note/SKILL.md
+      ask-later/SKILL.md
       end-session/SKILL.md
   learning-materials/          ← (gitignored) raw PDFs, PPTs, ZIPs, books
   temp/
@@ -42,9 +42,9 @@ These are the only interaction entry points. Each command activates a distinct m
 
 ---
 
-### `/register {name}`
+### `/add-material {name}`
 
-**Alias**: `/add {name}`
+**Alias**: `/register {name}`
 
 Register a new learning material into the system.
 
@@ -56,7 +56,7 @@ Register a new learning material into the system.
 
 ---
 
-### `/start {material-slug}`
+### `/start-study {material-slug}`
 
 Starts or resumes a **full tracked session** for a registered material. Also handles resume — re-invoking on an in-progress material continues from `currentUnit`.
 
@@ -88,20 +88,21 @@ Starts or resumes a **full tracked session** for a registered material. Also han
 
 ---
 
-### `/spotlight {topic} [in {material-slug}]`
+### `/deep-dive {topic} [in {material-slug}]`
 
 Starts a **standalone focused session** on a specific topic or content block, independent of linear material progress.
 
 - Does **not** advance `currentUnit` or affect `percentComplete`
 - Optionally linked to a material slug for context
 - At session end, appends to `temp/progress/<slug>/spotlight-log.md` (or a global `temp/progress/spotlight-log.md` if no material is linked)
+- Alias: `/spotlight {topic} [in {material-slug}]`
 
 **On activation:**
 
 1. If a material slug is provided, read its manifest for context (key concepts, covered units)
 2. Print:
     ```
-    🔦 SPOTLIGHT SESSION — <topic>
+    🔦 DEEP DIVE — <topic>
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Material : <title or "Standalone">
     Focus    : <topic>
@@ -113,7 +114,7 @@ Starts a **standalone focused session** on a specific topic or content block, in
 
 ---
 
-### `/quiz {material-slug} [unit: {unit-id}]`
+### `/quiz-me {material-slug} [unit: {unit-id}]`
 
 Activates quiz mode for a registered material.
 
@@ -126,7 +127,7 @@ Activates quiz mode for a registered material.
 
 ---
 
-### `/progress [material-slug]`
+### `/check-progress [material-slug]`
 
 **Alias**: `/status`
 
@@ -147,7 +148,7 @@ Activates quiz mode for a registered material.
 
 ---
 
-### `/note {concept text} [in {material-slug}]`
+### `/save-note {concept text} [in {material-slug}]`
 
 Save a key concept to the manifest immediately.
 
@@ -166,9 +167,9 @@ Confirm: _"Saved concept: **[concept]**"_
 
 ---
 
-### `/q {question text} [in {material-slug}]`
+### `/ask-later {question text} [in {material-slug}]`
 
-**Alias**: `/ask-later {question}`
+**Alias**: `/q {question}`
 
 Save a question for later to `pendingQuestions[]`:
 
@@ -197,7 +198,7 @@ Ends the current active session (tracked or spotlight) and **auto-saves all prog
     - Update `progress.currentUnit` to the next uncovered unit
     - Update `progress.lastStudiedOn` to today
     - Append to `sessions[]` array in the manifest
-3. Append to `session-log.md` (or `spotlight-log.md` for spotlight sessions):
+3. Append to `session-log.md` (or `spotlight-log.md` for deep-dive sessions):
 
 ```markdown
 ## Session — YYYY-MM-DD
@@ -227,7 +228,7 @@ Ends the current active session (tracked or spotlight) and **auto-saves all prog
 
 ## 3. Active Teaching Mode
 
-Active Teaching Mode is entered after `/start` or `/spotlight`. It governs the in-session behavior.
+Active Teaching Mode is entered after `/start-study` or `/deep-dive`. It governs the in-session behavior.
 
 ### 3.1 Teaching Rules
 
@@ -262,17 +263,17 @@ Active Teaching Mode is entered after `/start` or `/spotlight`. It governs the i
 
 These phrases during a session trigger an **immediate partial save** to the manifest without ending the session:
 
-| User says                                     | Action                                          |
-| --------------------------------------------- | ----------------------------------------------- |
-| `"save"` / `"save progress"`                  | Write `unitsCoveredThisSession` to manifest now |
-| `"note this"` / `/note ...`                   | Save concept immediately (§2 `/note`)           |
-| `"remember this question"` / `/q ...`         | Save pending question immediately (§2 `/q`)     |
-| `"done with [unit]"` / `"we finished [unit]"` | Mark that specific unit covered immediately     |
+| User says                                     | Action                                              |
+| --------------------------------------------- | --------------------------------------------------- |
+| `"save"` / `"save progress"`                  | Write `unitsCoveredThisSession` to manifest now     |
+| `"note this"` / `/save-note ...`              | Save concept immediately (§2 `/save-note`)          |
+| `"remember this question"` / `/ask-later ...` | Save pending question immediately (§2 `/ask-later`) |
+| `"done with [unit]"` / `"we finished [unit]"` | Mark that specific unit covered immediately         |
 
 ### 3.4 Session Flow
 
 ```
-/start or /spotlight
+/start-study or /deep-dive
       │
       ▼
   Print header
@@ -290,6 +291,67 @@ These phrases during a session trigger an **immediate partial save** to the mani
       │
       ▼
   /end-session → flush all to manifest + logs
+```
+
+### 3.5 Creative Explanation Format
+
+When explaining concepts in Active Teaching Mode, use **rich visual formatting** to make content memorable and easier to understand. Plain prose is never enough — always reach for the visual first.
+
+**Visual tools to use:**
+
+| Tool                                  | When to use                                              |
+| ------------------------------------- | -------------------------------------------------------- |
+| ASCII diagrams / flowcharts           | Algorithms, pipelines, system architectures, data flow   |
+| Comparison tables                     | Contrasting 2+ concepts, pros/cons, algorithm trade-offs |
+| Step-by-step numbered breakdowns      | Processes, training loops, mathematical derivations      |
+| Code blocks with rich inline comments | Any technical or programmatic concept                    |
+| KaTeX math ($formula$)                | Equations, loss functions, metrics, probability          |
+| Analogy blocks                        | Any abstract concept that has a real-world parallel      |
+
+**Markers to use consistently in every explanation:**
+
+| Marker                | Purpose                                              |
+| --------------------- | ---------------------------------------------------- |
+| 📌 **Key Concept**    | Label the core idea being introduced                 |
+| 💡 **Analogy**        | Real-world comparison to make it click               |
+| ⚠️ **Common Mistake** | Flag a frequent misunderstanding                     |
+| 🔧 **In Practice**    | Show how it's actually used in code or real projects |
+| 🧠 **Mental Model**   | End-of-concept summary — the one thing to remember   |
+| 🎯 **Why It Matters** | Motivate the concept before diving in                |
+
+**Rules:**
+
+- **Always open** a concept with a 🎯 **Why It Matters** hook (1–2 sentences) before explaining it
+- **Always close** each concept block with a 🧠 **Mental Model** summary (1 sentence the user can write on a sticky note)
+- Use an ASCII diagram for any concept that involves structure, flow, or comparison — do not skip this even for simple ideas
+- Use a 💡 **Analogy** for every abstract concept (math, theory, ML algorithms, etc.)
+- Use code blocks with `# comment every line` annotations for implementation examples
+- Match depth to the material type: courses and books get full diagrams; articles get lighter formatting
+
+**Example concept block structure:**
+
+```
+🎯 Why It Matters
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[1-2 sentences: what problem this solves, why you need to know it]
+
+📌 Key Concept: <Name>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Core explanation, one idea at a time]
+
+  [ASCII diagram showing the concept visually]
+
+💡 Analogy
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Real-world parallel in 2-3 sentences]
+
+🔧 In Practice
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Code snippet or real-world usage example]
+
+🧠 Mental Model
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[One sticky-note sentence that captures the entire concept]
 ```
 
 ---
@@ -359,16 +421,16 @@ On **inline save** or **`/end-session`**:
 
 ## 5. Quick Slash-Command Reference
 
-| Command                        | Mode            | Description                                  |
-| ------------------------------ | --------------- | -------------------------------------------- |
-| `/register {name}`             | Setup           | Register new material                        |
-| `/start {slug}`                | Tracked Session | Start or resume a session (any type)         |
-| `/spotlight {topic} [in slug]` | Standalone      | Focused deep-dive without affecting progress |
-| `/quiz {slug} [unit: {id}]`    | Quiz            | Test yourself on covered material            |
-| `/progress [slug]`             | Info            | Show all or single material progress         |
-| `/note {text} [in slug]`       | Save            | Save a key concept immediately               |
-| `/q {question} [in slug]`      | Save            | Log a question for later                     |
-| `/end-session`                 | Save            | End session and flush all progress to disk   |
+| Command                           | Mode            | Description                                  |
+| --------------------------------- | --------------- | -------------------------------------------- |
+| `/add-material {name}`            | Setup           | Register new material                        |
+| `/start-study {slug}`             | Tracked Session | Start or resume a session (any type)         |
+| `/deep-dive {topic} [in slug]`    | Standalone      | Focused deep-dive without affecting progress |
+| `/quiz-me {slug} [unit: {id}]`    | Quiz            | Test yourself on covered material            |
+| `/check-progress [slug]`          | Info            | Show all or single material progress         |
+| `/save-note {text} [in slug]`     | Save            | Save a key concept immediately               |
+| `/ask-later {question} [in slug]` | Save            | Log a question for later                     |
+| `/end-session`                    | Save            | End session and flush all progress to disk   |
 
 ---
 
@@ -393,4 +455,4 @@ If `structure[]` is empty or has a `tbd` entry, **always ask the user to paste t
 - Pasted content from user = authoritative source for that block
 - Proactively suggest `/end-session` after 45–60 min of active teaching or when a natural stopping point is reached
 - Never skip flushing `manifest.json` on `/end-session` — it is the source of truth
-- Spotlight sessions must never pollute tracked progress (no `currentUnit` or `percentComplete` changes)
+- Deep-dive sessions (`/deep-dive`) must never pollute tracked progress (no `currentUnit` or `percentComplete` changes)

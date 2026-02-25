@@ -7,10 +7,10 @@ A Copilot-powered personal learning system that tracks your progress across book
 ## How It Works
 
 ```
-Type /start <material>  →  Copilot teaches it  →  Progress auto-tracked  →  /end-session saves all
+Type /start-study <material>  →  Copilot teaches it creatively  →  Progress auto-tracked  →  /end-session saves all
 ```
 
-Copilot acts as your personal tutor via **agent skills** — slash commands that appear in the chat `/` menu. It knows where you left off, dynamically tracks what you've covered, saves key concepts, and can quiz you at any time.
+Copilot acts as your personal tutor via **agent skills** — slash commands that appear in the chat `/` menu. It knows where you left off, dynamically tracks what you've covered, saves key concepts, and can quiz you at any time. Every concept is explained with **visual diagrams, analogies, code examples, and mental models** so material sticks.
 
 ---
 
@@ -21,13 +21,13 @@ Copilot acts as your personal tutor via **agent skills** — slash commands that
   .github/
     copilot-instructions.md     ← master behavior rules for the agent
     skills/                     ← agent skills (slash commands)
-      register/SKILL.md
-      start/SKILL.md
-      spotlight/SKILL.md
-      quiz/SKILL.md
-      progress/SKILL.md
-      note/SKILL.md
-      q/SKILL.md
+      add-material/SKILL.md
+      start-study/SKILL.md
+      deep-dive/SKILL.md
+      quiz-me/SKILL.md
+      check-progress/SKILL.md
+      save-note/SKILL.md
+      ask-later/SKILL.md
       end-session/SKILL.md
   LEARNING-MATERIALS.md         ← guide for adding materials (tracked by git)
   learning-materials/           ← (gitignored) paste your PDFs, PPTs, ZIPs here
@@ -39,7 +39,7 @@ Copilot acts as your personal tutor via **agent skills** — slash commands that
       <slug>/
         manifest.json           ← progress state for this material
         session-log.md          ← tracked session history
-        spotlight-log.md        ← standalone spotlight session history
+        spotlight-log.md        ← standalone deep-dive session history
 ```
 
 ---
@@ -50,13 +50,13 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 
 | Command | What it does |
 |---|---|
-| `/register <name>` | Register a new learning material |
-| `/start <slug>` | Start or resume a session (any type — book, course, slides, article) |
-| `/spotlight <topic> [in <slug>]` | Standalone focused deep-dive, no progress change |
-| `/quiz <slug> [unit: <id>]` | Quiz yourself on covered material |
-| `/progress [slug]` | Show progress across all or one material |
-| `/note <text> [in <slug>]` | Save a key concept immediately |
-| `/q <question> [in <slug>]` | Log a question for later |
+| `/add-material <name>` | Register a new learning material |
+| `/start-study <slug>` | Start or resume a session (any type — book, course, slides, article) |
+| `/deep-dive <topic> [in <slug>]` | Standalone focused deep-dive, no progress change |
+| `/quiz-me <slug> [unit: <id>]` | Quiz yourself on covered material |
+| `/check-progress [slug]` | Show progress across all or one material |
+| `/save-note <text> [in <slug>]` | Save a key concept immediately |
+| `/ask-later <question> [in <slug>]` | Log a question for later |
 | `/end-session` | End session and flush all progress to disk |
 
 ---
@@ -64,12 +64,12 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 ## Quick Start
 
 ```
-/register Clean Code          ← adds a new material
-/start clean-code             ← begins or resumes a tracked session
-/spotlight backpropagation in ml-a-z  ← focused topic, no progress change
-/quiz ml-a-z                  ← test yourself on covered material
-/end-session                  ← saves everything to disk
-/progress                     ← see all materials
+/add-material Clean Code          ← adds a new material
+/start-study clean-code           ← begins or resumes a tracked session
+/deep-dive backpropagation in ml-a-z  ← focused topic, no progress change
+/quiz-me ml-a-z                   ← test yourself on covered material
+/end-session                      ← saves everything to disk
+/check-progress                   ← see all materials
 ```
 
 ---
@@ -77,6 +77,22 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 ## How Progress Tracking Works
 
 - **Automatic** — Copilot tracks units and concepts as the session flows; you never need to say "mark as covered"
-- **Inline saves** — saying `"save progress"`, `/note`, or `/q` triggers an immediate write to disk
+- **Inline saves** — saying `"save progress"`, `/save-note`, or `/ask-later` triggers an immediate write to disk
 - **Full flush** — `/end-session` writes all covered units, updates `percentComplete`, and logs the session
-- **Spotlight isolation** — `/spotlight` sessions never pollute tracked progress
+- **Deep-dive isolation** — `/deep-dive` sessions never pollute tracked progress
+
+---
+
+## Creative Teaching Style
+
+When studying, Copilot explains every concept using a structured, visual format:
+
+| Block | Purpose |
+|---|---|
+| 🎯 **Why It Matters** | Opens every concept — motivates before explaining |
+| 📌 **Key Concept** | Core explanation, one idea at a time |
+| ASCII diagram | Visual structure for algorithms, flows, comparisons |
+| 💡 **Analogy** | Real-world parallel to make abstract ideas click |
+| ⚠️ **Common Mistake** | Flags frequent misunderstandings |
+| 🔧 **In Practice** | Annotated code snippet or real-world usage |
+| 🧠 **Mental Model** | Closes every concept — one sticky-note summary |

@@ -1,12 +1,12 @@
 ---
-name: start
+name: start-study
 description: Start or resume a full tracked learning session for a registered material. Use this when the user wants to begin or continue studying a book, course, slides, or article. Loads the manifest, prints session state, then enters active teaching mode with dynamic progress tracking.
 argument-hint: <material-slug> [or material name]
 ---
 
 # Start or Resume a Tracked Learning Session
 
-Read `.github/copilot-instructions.md` first for the full system behavior, active teaching rules, and dynamic tracking spec.
+Read `.github/copilot-instructions.md` first for the full system behavior, active teaching rules, dynamic tracking spec, and **creative explanation format (§3.5)**.
 
 ## Steps
 
@@ -27,6 +27,7 @@ Read `.github/copilot-instructions.md` first for the full system behavior, activ
 5. Ask: _"Continue from **[currentUnit]** or jump to a specific section?"_
 6. Enter **Active Teaching Mode**:
     - Teach one concept at a time
+    - **Use the creative format from §3.5** — always open with 🎯 Why It Matters, include an ASCII diagram, a 💡 Analogy, a 🔧 In Practice example, and close with 🧠 Mental Model
     - Ask a comprehension check every 3 concepts
     - Offer a 3-question mini-quiz after each major unit
     - Auto-track all covered units and concepts in memory (do NOT wait for user to say "mark as covered")

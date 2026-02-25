@@ -1,5 +1,5 @@
 ---
-name: note
+name: save-note
 description: Save a key concept to a material's manifest immediately, during or outside a session. Use when the user wants to record something important they just learned. Appends to keyConcepts[] in the manifest.
 argument-hint: <concept text> [in <material-slug>]
 ---

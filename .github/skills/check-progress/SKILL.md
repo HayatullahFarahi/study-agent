@@ -1,5 +1,5 @@
 ---
-name: progress
+name: check-progress
 description: Show learning progress across all registered materials, or detailed progress for a single material. Reads all manifests and _index.json to display progress percentages, last studied dates, current units, and pending questions. Use when the user wants to check how far they are or review saved questions.
 argument-hint: [material-slug] (omit to see all materials)
 ---
