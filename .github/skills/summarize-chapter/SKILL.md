@@ -67,6 +67,15 @@ Every chapter summary **must** follow this structure — no plain prose summarie
 *Covered: §<ids> | Summarized: <YYYY-MM-DD>*
 ```
 
+**Concept inventory rule (prevents gaps without inflating length):**
+
+Before writing each section block:
+
+1. List every named concept, framework, model, technique, ladder, loop, taxonomy, or comparison table the author introduces in that section — hold this as `sectionConcepts[]`
+2. Write the summary block, covering each item in `sectionConcepts[]`
+3. Any concept not given a full block gets at minimum a 📌 one-liner so it is not invisible
+4. Do **not** add more depth per concept — keep the same tight format. The goal is zero omissions, not longer entries.
+
 **Visual tools required:**
 
 | Tool                   | Required when                                   |

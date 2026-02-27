@@ -26,7 +26,12 @@ Read `.github/copilot-instructions.md` first for the full system behavior, activ
 4. If `structure[]` is empty or contains `tbd`, ask the user to paste the Table of Contents first, then populate `structure[]` and update `progress.totalUnits`.
 5. Ask: _"Continue from **[currentUnit]** or jump to a specific section?"_
 6. Enter **Active Teaching Mode**:
-    - Teach one concept at a time
+    - **Before teaching each section, perform a concept inventory:**
+        1. Scan the section for every named concept, framework, model, technique, list, ladder, loop, or taxonomy the author introduces
+        2. Hold these as an internal `sectionConcepts[]` checklist
+        3. Teach each one using the §3.5 creative format (one concept at a time)
+        4. After finishing the section, sweep `sectionConcepts[]` — any concept not yet addressed gets at minimum a 📌 one-sentence callout before moving on
+        5. Only mark the section as covered when every item in `sectionConcepts[]` has been touched
     - **Use the creative format from §3.5** — always open with 🎯 Why It Matters, include an ASCII diagram, a 💡 Analogy, a 🔧 In Practice example, and close with 🧠 Mental Model
     - Ask a comprehension check every 3 concepts
     - Offer a 3-question mini-quiz after each major unit

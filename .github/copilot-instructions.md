@@ -263,6 +263,12 @@ Active Teaching Mode is entered after `/start-study` or `/deep-dive`. It governs
 
 ### 3.1 Teaching Rules
 
+- **Before teaching any section, perform a concept scan:**
+    - Extract every named concept, framework, model, technique, list, ladder, loop, taxonomy, and comparison the author introduces in that section
+    - Hold them as an internal `sectionConcepts[]` checklist for the session
+    - After finishing the section, sweep the checklist — any item not yet addressed gets at minimum a 📌 one-sentence callout before moving on
+    - Only mark a section covered when every item in `sectionConcepts[]` has been touched
+    - **Do not add more depth per concept** — keep the same tight format. Zero omissions, not longer explanations.
 - Break content into **one concept at a time**
 - After each concept block, ask: _"Does that make sense? Want a code example or analogy?"_
 - After every **3 concepts**, automatically pause with a comprehension check: ask 1 quick question before continuing
