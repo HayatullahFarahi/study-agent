@@ -263,7 +263,37 @@ Active Teaching Mode is entered after `/start-study` or `/deep-dive`. It governs
 
 ### 3.1 Teaching Rules
 
-- **Before teaching any section, perform a concept scan:**
+> **Core principle: manifest = progress tracker. Source material = teaching content. Never confuse the two.**
+
+- **Before teaching any section, load the source content:**
+    - Check `manifest.source` for the file path of the material under `learning-materials/<slug>/`
+    - Check `manifest.sourceText` — if this field exists, it points to a pre-converted readable `.txt` file; use it directly and skip all conversion steps.
+    - If the file is readable (`.md`, `.txt`, `.html`): read the relevant section directly from `learning-materials/<slug>/`
+    - If the file is a binary format (`.pdf`, `.pptx`, `.docx`): **do NOT ask the user to paste — attempt auto-conversion first** (see conversion procedure below). Only fall back to asking the user if conversion fails.
+    - **NEVER use `temp/Notes/<slug>/` as a teaching source.** Saved notes are read-only supplements for cross-referencing only — not a substitute for source content.
+    - The fallback _"Teaching from general knowledge"_ is **not permitted**. If source is unavailable and conversion failed, ask the user to paste it and wait.
+    - Hold read/converted content as `activeUnitSource` for that unit — do NOT reuse it across units
+
+**Binary-to-text conversion procedure (run when `manifest.sourceText` is absent and source is `.pdf`/`.pptx`/`.docx`):**
+
+1. Determine the source path from `manifest.source` (e.g. `learning-materials/ai-engineering/AI-Engineering.pdf`)
+2. Derive the output path: same directory, same base name, `.txt` extension (e.g. `learning-materials/ai-engineering/AI-Engineering.txt`)
+3. Check whether the `.txt` file already exists — if yes, skip conversion, go to step 5
+4. Run the appropriate conversion command in the terminal:
+
+    | Format  | Command                                                                                                                                                                                                            |
+    | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | `.pdf`  | `python -c "import pdfminer.high_level as p; open(r'<out>', 'w', encoding='utf-8').write(p.extract_text(r'<src>'))"`                                                                                               |
+    | `.pptx` | `python -c "from pptx import Presentation; prs=Presentation(r'<src>'); open(r'<out>','w',encoding='utf-8').write('\n'.join(shp.text_frame.text for sl in prs.slides for shp in sl.shapes if shp.has_text_frame))"` |
+    | `.docx` | `python -c "from docx import Document; doc=Document(r'<src>'); open(r'<out>','w',encoding='utf-8').write('\n'.join(p.text for p in doc.paragraphs))"`                                                              |
+
+    If the required library is missing, install it first: `pip install pdfminer.six` / `pip install python-pptx` / `pip install python-docx`
+
+5. After successful conversion, update `manifest.sourceText` to the `.txt` path so future sessions skip conversion entirely
+6. If conversion fails for any reason, fall back to asking the user to paste the section text
+7. Once the `.txt` file exists (either just created or pre-existing), read the relevant section from it as normal text
+
+- **Before teaching any section, perform a concept scan from `activeUnitSource`:**
     - Extract every named concept, framework, model, technique, list, ladder, loop, taxonomy, and comparison the author introduces in that section
     - Hold them as an internal `sectionConcepts[]` checklist for the session
     - After finishing the section, sweep the checklist — any item not yet addressed gets at minimum a 📌 one-sentence callout before moving on
