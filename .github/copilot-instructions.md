@@ -151,20 +151,30 @@ Activates quiz mode for a registered material.
 
 ### `/save-note {concept text} [in {material-slug}]`
 
-Save a key concept to the manifest immediately.
+Save a key concept to the manifest **and** to a rich markdown note file.
 
-Append to `keyConcepts[]`:
+**Step 1 — Update manifest.** Determine `order` = current `keyConcepts[]` length + 1. Determine `chapter` from the unit id (e.g. `"1.4"` → `"Chapter 1"`), or `"General"` if no unit. Append to `keyConcepts[]`:
 
 ```json
 {
+    "order": <next integer>,
     "concept": "<name>",
     "unit": "<current active unit or null>",
+    "chapter": "<Chapter N or General>",
     "summary": "<one-line definition>",
     "learnedOn": "<YYYY-MM-DD>"
 }
 ```
 
-Confirm: _"Saved concept: **[concept]**"_
+**Step 2 — Create or update note file** at `temp/Notes/<slug>/<order>-<chapter-slug>-<concept-slug>.md`:
+
+- `<order>`: zero-padded 2-digit integer matching the `order` field (e.g. `01`, `02`, `12`)
+- `<chapter-slug>`: `"General"` → `general`; `"Chapter 1"` → `ch1`; `"Chapter 10"` → `ch10`
+- `<concept-slug>`: concept name lowercased and hyphenated
+- **New file**: write the full rich template (🎯 Why It Matters → 📌 Key Concept + ASCII diagram → 💡 Analogy → 🔧 In Practice → ⚠️ Common Mistake → 🧠 Mental Model)
+- **Existing file**: append a new `## Update — YYYY-MM-DD` section with the new insight; update the `*Last updated:*` line
+
+Confirm: _"Saved concept: **[concept]** → `temp/Notes/<slug>/<order>-<chapter-slug>-<concept-slug>.md`"_
 
 ---
 
