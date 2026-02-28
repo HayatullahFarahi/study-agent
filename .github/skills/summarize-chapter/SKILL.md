@@ -21,9 +21,9 @@ Read `.github/copilot-instructions.md` first for the full system behavior and **
 5. Generate a **creative visual summary** of the chapter (see Format Rules below).
 6. Save the summary file to:
     ```
-    temp/<slug>-ch<chapter-id>-summary.md
+    temp/Notes/<slug>/summary/<slug>-ch<chapter-id>-summary.md
     ```
-    Use `temp/ch<chapter-id>-summary.md` if no slug prefix is needed or user is in an active session.
+    Use `temp/Notes/standalone/summary/ch<chapter-id>-summary.md` if no slug is known.
 7. Confirm the save path to the user.
 8. Ask: _"Want me to quiz you on this chapter, or continue to the next section?"_
 
@@ -102,11 +102,11 @@ Before writing each section block:
 
 ## Output File Naming
 
-| Scenario                          | File path                       |
-| --------------------------------- | ------------------------------- |
-| Active session, material known    | `temp/<slug>-ch<id>-summary.md` |
-| No active session, material known | `temp/<slug>-ch<id>-summary.md` |
-| Standalone (no material linked)   | `temp/ch<id>-summary.md`        |
+| Scenario                          | File path                                            |
+| --------------------------------- | ---------------------------------------------------- |
+| Active session, material known    | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.md` |
+| No active session, material known | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.md` |
+| Standalone (no material linked)   | `temp/Notes/standalone/summary/ch<id>-summary.md`    |
 
 ---
 

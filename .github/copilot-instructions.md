@@ -241,7 +241,7 @@ Ends the current active session (tracked or spotlight) and **auto-saves all prog
 
 **Alias**: `/summarize {chapter-id} in {material-slug}`
 
-Generate a **creative visual summary** of a single chapter and save it to `temp/`.
+Generate a **creative visual summary** of a single chapter and save it to `temp/Notes/<slug>/summary/`.
 
 1. Read `temp/progress/<slug>/manifest.json` — find the chapter in `structure[]`
 2. Note which sections are in `coveredUnits[]` (studied) vs. not yet covered
@@ -249,7 +249,7 @@ Generate a **creative visual summary** of a single chapter and save it to `temp/
     - A 🗺️ Big Picture ASCII diagram at the top
     - One block per section: 📌 Key Concept + ASCII diagram + 💡 Analogy + ⚠️ Common Mistake + 🔧 In Practice (where applicable)
     - A 🧠 One-Sentence Mental Model at the end
-4. Save to `temp/<slug>-ch<chapter-id>-summary.md`
+4. Save to `temp/Notes/<slug>/summary/<slug>-ch<chapter-id>-summary.md`
 5. Confirm save path and ask: _"Want a quiz on this chapter, or continue to the next section?"_
 
 > ⚠️ For sections not yet studied, write structure-only placeholders and prompt the user to paste content — **never fabricate**.
@@ -488,17 +488,17 @@ On **inline save** or **`/end-session`**:
 
 ## 5. Quick Slash-Command Reference
 
-| Command                                   | Mode            | Description                                                         |
-| ----------------------------------------- | --------------- | ------------------------------------------------------------------- |
-| `/add-material {name}`                    | Setup           | Register new material                                               |
-| `/start-study {slug}`                     | Tracked Session | Start or resume a session (any type)                                |
-| `/deep-dive {topic} [in slug]`            | Standalone      | Focused deep-dive without affecting progress                        |
-| `/quiz-me {slug} [unit: {id}]`            | Quiz            | Test yourself on covered material                                   |
-| `/check-progress [slug]`                  | Info            | Show all or single material progress                                |
-| `/save-note {text} [in slug]`             | Save            | Save a key concept immediately                                      |
-| `/ask-later {question} [in slug]`         | Save            | Log a question for later                                            |
-| `/end-session`                            | Save            | End session and flush all progress to disk                          |
-| `/summarize-chapter {slug} chapter: {id}` | Reference       | Generate a creative visual summary of a chapter and save to `temp/` |
+| Command                                   | Mode            | Description                                                                              |
+| ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------- |
+| `/add-material {name}`                    | Setup           | Register new material                                                                    |
+| `/start-study {slug}`                     | Tracked Session | Start or resume a session (any type)                                                     |
+| `/deep-dive {topic} [in slug]`            | Standalone      | Focused deep-dive without affecting progress                                             |
+| `/quiz-me {slug} [unit: {id}]`            | Quiz            | Test yourself on covered material                                                        |
+| `/check-progress [slug]`                  | Info            | Show all or single material progress                                                     |
+| `/save-note {text} [in slug]`             | Save            | Save a key concept immediately                                                           |
+| `/ask-later {question} [in slug]`         | Save            | Log a question for later                                                                 |
+| `/end-session`                            | Save            | End session and flush all progress to disk                                               |
+| `/summarize-chapter {slug} chapter: {id}` | Reference       | Generate a creative visual summary of a chapter and save to `temp/Notes/<slug>/summary/` |
 
 ---
 
