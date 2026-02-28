@@ -67,6 +67,18 @@ Every chapter summary **must** follow this structure — no plain prose summarie
 *Covered: §<ids> | Summarized: <YYYY-MM-DD>*
 ```
 
+**Acronym expansion rule:**
+
+Every time an acronym or abbreviation is used in a summary, **always write the full form first**, followed by the short form in parentheses — or the short form followed by the full form in parentheses on first use. Examples:
+- ✅ `Supervised Finetuning (SFT)`
+- ✅ `Reinforcement Learning from Human Feedback (RLHF)`
+- ✅ `Mixture of Experts (MoE)`
+- ❌ `SFT` alone — never use a bare acronym without expanding it at least once per summary
+
+On **subsequent uses** within the same section block, the short form alone is fine.
+
+---
+
 **Concept inventory rule (prevents gaps without inflating length):**
 
 Before writing each section block:
