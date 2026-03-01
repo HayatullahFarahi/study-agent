@@ -29,6 +29,7 @@ Copilot acts as your personal tutor via **agent skills** — slash commands that
       save-note/SKILL.md
       ask-later/SKILL.md
       end-session/SKILL.md
+      summarize-chapter/SKILL.md
   LEARNING-MATERIALS.md         ← guide for adding materials (tracked by git)
   learning-materials/           ← (gitignored) paste your PDFs, PPTs, ZIPs here
     <slug>/
@@ -58,6 +59,7 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 | `/save-note <text> [in <slug>]` | Save a key concept immediately |
 | `/ask-later <question> [in <slug>]` | Log a question for later |
 | `/end-session` | End session and flush all progress to disk |
+| `/summarize-chapter <slug> chapter: <id>` | Generate a creative visual summary of a chapter |
 
 ---
 

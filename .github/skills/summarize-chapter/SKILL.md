@@ -1,3 +1,9 @@
+---
+name: summarize-chapter
+description: Generate a creative visual summary of a single chapter from a registered learning material and save it to temp/Notes/<slug>/summary/. Use when the user wants a structured recap of a chapter with ASCII diagrams, analogies, and mental models. Does not update coveredUnits or session progress.
+argument-hint: <material-slug> chapter: <chapter-id>
+---
+
 # Summarize a Chapter from a Learning Material
 
 Read `.github/copilot-instructions.md` first for the full system behavior and **creative explanation format (§3.5)**.
