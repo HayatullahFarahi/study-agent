@@ -14,6 +14,19 @@ Copilot acts as your personal tutor via **agent skills** — slash commands that
 
 ---
 
+## Prerequisites
+
+| Requirement | Details |
+|---|---|
+| **VS Code** | [Download](https://code.visualstudio.com/) — version 1.99 or later recommended |
+| **GitHub Copilot subscription** | Individual or Business plan — [get one here](https://github.com/features/copilot) |
+| **Copilot agent mode** | Must be enabled in VS Code: `Settings → GitHub Copilot → Enable Agent Mode` |
+| **Python 3.x** *(optional)* | Only needed if your materials are in `.pdf`, `.pptx`, or `.docx` format — used for auto-conversion |
+
+> **Note:** Slash commands (`/start-study`, `/quiz-me`, etc.) only appear in **Copilot Chat in agent mode**. They will not work in the inline editor or ask mode.
+
+---
+
 ## Folder Structure
 
 ```
