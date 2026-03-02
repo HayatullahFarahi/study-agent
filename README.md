@@ -6,6 +6,22 @@ A Copilot-powered personal learning system that tracks your progress across book
 
 ---
 
+## Demo
+
+<p align="center">
+  <img src="assets/demo.svg" alt="Demo session — /start-study demo → concept explanation → /end-session" width="720"/>
+</p>
+
+A **demo article** is included out of the box so you can try the system immediately after cloning:
+
+```
+/start-study demo       ← starts a session on "AI Engineering Fundamentals" demo article
+```
+
+No setup needed — the demo material, manifest, and session logs are all pre-configured in the `demo/` folder. Covers the AI engineering stack, prompting, RAG, evaluation, and going to production.
+
+---
+
 ## How It Works
 
 ```
