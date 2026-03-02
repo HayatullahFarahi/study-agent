@@ -1,0 +1,57 @@
+{
+    "$schema": "alf-progress/v1",
+    "_comment": "Demo material — try /start-study demo right after cloning",
+    "id": "demo",
+    "title": "AI Engineering Fundamentals — A Demo Article",
+    "type": "article",
+    "format": "md",
+    "source": "demo/ai-engineering-intro/article.md",
+    "sourceText": "demo/ai-engineering-intro/article.md",
+    "addedOn": "2026-03-02",
+    "estimatedTotalUnits": 5,
+    "structure": [
+        {
+            "id": "ch-1",
+            "title": "AI Engineering Fundamentals",
+            "sections": [
+                {
+                    "id": "1.1",
+                    "title": "The AI Engineering Stack",
+                    "pages": null
+                },
+                {
+                    "id": "1.2",
+                    "title": "Foundation Models and Prompting",
+                    "pages": null
+                },
+                {
+                    "id": "1.3",
+                    "title": "Retrieval-Augmented Generation (RAG)",
+                    "pages": null
+                },
+                {
+                    "id": "1.4",
+                    "title": "Evaluation and Testing",
+                    "pages": null
+                },
+                {
+                    "id": "1.5",
+                    "title": "From Prototype to Production",
+                    "pages": null
+                }
+            ]
+        }
+    ],
+    "progress": {
+        "totalUnits": 5,
+        "unitsCovered": 0,
+        "percentComplete": 0,
+        "currentUnit": "1.1",
+        "lastStudiedOn": null
+    },
+    "coveredUnits": [],
+    "sessions": [],
+    "keyConcepts": [],
+    "pendingQuestions": [],
+    "notes": ""
+}
