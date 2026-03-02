@@ -1,5 +1,7 @@
 # Agentic Learning Flow
 
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/HayatullahFarahi/study-agent/generate)
+
 A Copilot-powered personal learning system that tracks your progress across books, courses, and slide decks — session by session.
 
 ---
