@@ -1,5 +1,7 @@
 # Agentic Learning Flow
 
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/HayatullahFarahi/study-agent/generate)
+
 A Copilot-powered personal learning system that tracks your progress across books, courses, and slide decks — session by session.
 
 ---
@@ -11,6 +13,19 @@ Type /start-study <material>  →  Copilot teaches it creatively  →  Progress 
 ```
 
 Copilot acts as your personal tutor via **agent skills** — slash commands that appear in the chat `/` menu. It knows where you left off, dynamically tracks what you've covered, saves key concepts, and can quiz you at any time. Every concept is explained with **visual diagrams, analogies, code examples, and mental models** so material sticks.
+
+---
+
+## Prerequisites
+
+| Requirement | Details |
+|---|---|
+| **VS Code** | [Download](https://code.visualstudio.com/) — version 1.99 or later recommended |
+| **GitHub Copilot subscription** | Individual or Business plan — [get one here](https://github.com/features/copilot) |
+| **Copilot agent mode** | Must be enabled in VS Code: `Settings → GitHub Copilot → Enable Agent Mode` |
+| **Python 3.x** *(optional)* | Only needed if your materials are in `.pdf`, `.pptx`, or `.docx` format — used for auto-conversion |
+
+> **Note:** Slash commands (`/start-study`, `/quiz-me`, etc.) only appear in **Copilot Chat in agent mode**. They will not work in the inline editor or ask mode.
 
 ---
 
