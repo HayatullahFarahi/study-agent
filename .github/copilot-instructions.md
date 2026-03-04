@@ -53,7 +53,8 @@ Register a new learning material into the system.
 2. Create `temp/progress/<slug>/manifest.json` by copying `_template.json` and filling in `id`, `title`, `type`, `format`, `source`, `addedOn`
 3. Add an entry to `temp/progress/_index.json`
 4. Create `temp/progress/<slug>/session-log.md` and `temp/progress/<slug>/spotlight-log.md`
-5. Confirm registration, then ask: _"Do you want to paste the Table of Contents now so I can populate the structure?"_
+5. Create `temp/Notes/<slug>/overview.md` — a one-page overview file with an At-a-Glance table, a type-specific structure table (Chapters / Modules / Slide Groups / Sections), a Study Goals checklist and a Key Themes placeholder. If structure is not yet known, use placeholder rows. See the `add-material` SKILL.md for the full per-type templates.
+6. Confirm registration, then ask: _"Do you want to paste the Table of Contents now so I can populate the structure?"_
 
 ---
 
@@ -237,9 +238,9 @@ Ends the current active session (tracked or spotlight) and **auto-saves all prog
 
 ---
 
-### `/summarize-chapter {material-slug} chapter: {chapter-id}`
+### `/summarize-chapter {material-slug} chapter: {chapter-id} [format: pdf]`
 
-**Alias**: `/summarize {chapter-id} in {material-slug}`
+**Alias**: `/summarize {chapter-id} in {material-slug} [--pdf]`
 
 Generate a **creative visual summary** of a single chapter and save it to `temp/Notes/<slug>/summary/`.
 
@@ -488,17 +489,17 @@ On **inline save** or **`/end-session`**:
 
 ## 5. Quick Slash-Command Reference
 
-| Command                                   | Mode            | Description                                                                              |
-| ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------- |
-| `/add-material {name}`                    | Setup           | Register new material                                                                    |
-| `/start-study {slug}`                     | Tracked Session | Start or resume a session (any type)                                                     |
-| `/deep-dive {topic} [in slug]`            | Standalone      | Focused deep-dive without affecting progress                                             |
-| `/quiz-me {slug} [unit: {id}]`            | Quiz            | Test yourself on covered material                                                        |
-| `/check-progress [slug]`                  | Info            | Show all or single material progress                                                     |
-| `/save-note {text} [in slug]`             | Save            | Save a key concept immediately                                                           |
-| `/ask-later {question} [in slug]`         | Save            | Log a question for later                                                                 |
-| `/end-session`                            | Save            | End session and flush all progress to disk                                               |
-| `/summarize-chapter {slug} chapter: {id}` | Reference       | Generate a creative visual summary of a chapter and save to `temp/Notes/<slug>/summary/` |
+| Command                                                 | Mode            | Description                                                                                                                 |
+| ------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `/add-material {name}`                                  | Setup           | Register new material                                                                                                       |
+| `/start-study {slug}`                                   | Tracked Session | Start or resume a session (any type)                                                                                        |
+| `/deep-dive {topic} [in slug]`                          | Standalone      | Focused deep-dive without affecting progress                                                                                |
+| `/quiz-me {slug} [unit: {id}]`                          | Quiz            | Test yourself on covered material                                                                                           |
+| `/check-progress [slug]`                                | Info            | Show all or single material progress                                                                                        |
+| `/save-note {text} [in slug]`                           | Save            | Save a key concept immediately                                                                                              |
+| `/ask-later {question} [in slug]`                       | Save            | Log a question for later                                                                                                    |
+| `/end-session`                                          | Save            | End session and flush all progress to disk                                                                                  |
+| `/summarize-chapter {slug} chapter: {id} [format: pdf]` | Reference       | Generate a creative visual summary of a chapter; add `format: pdf` or `--pdf` to also save a styled PDF alongside the `.md` |
 
 ---
 
