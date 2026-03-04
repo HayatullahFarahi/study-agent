@@ -65,6 +65,13 @@ Copilot acts as your personal tutor via **agent skills** — slash commands that
   learning-materials/           ← (gitignored) paste your PDFs, PPTs, ZIPs here
     <slug>/
   temp/
+    Notes/                      ← (gitignored) auto-generated notes and summaries
+      <slug>/
+        overview.md             ← one-page overview created on /add-material
+        <order>-<ch>-<concept>.md  ← concept notes saved via /save-note
+        summary/
+          <slug>-ch<id>-summary.md   ← chapter summaries (.md)
+          <slug>-ch<id>-summary.pdf  ← chapter summaries (.pdf, optional)
     progress/                   ← (gitignored) all progress tracking lives here
       _index.json               ← index of all registered materials
       _template.json            ← schema template for new materials
@@ -82,7 +89,7 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 
 | Command | What it does |
 |---|---|
-| `/add-material <name>` | Register a new learning material |
+| `/add-material <name>` | Register a new learning material + create a one-page `overview.md` |
 | `/start-study <slug>` | Start or resume a session (any type — book, course, slides, article) |
 | `/deep-dive <topic> [in <slug>]` | Standalone focused deep-dive, no progress change |
 | `/quiz-me <slug> [unit: <id>]` | Quiz yourself on covered material |
@@ -90,19 +97,21 @@ Type `/` in Copilot Chat to see all available skills. VS Code agent mode require
 | `/save-note <text> [in <slug>]` | Save a key concept immediately |
 | `/ask-later <question> [in <slug>]` | Log a question for later |
 | `/end-session` | End session and flush all progress to disk |
-| `/summarize-chapter <slug> chapter: <id>` | Generate a creative visual summary of a chapter |
+| `/summarize-chapter <slug> chapter: <id> [format: pdf]` | Generate a creative visual chapter summary (markdown ± PDF) |
 
 ---
 
 ## Quick Start
 
 ```
-/add-material Clean Code          ← adds a new material
+/add-material Clean Code          ← registers material + creates temp/Notes/clean-code/overview.md
 /start-study clean-code           ← begins or resumes a tracked session
 /deep-dive backpropagation in ml-a-z  ← focused topic, no progress change
 /quiz-me ml-a-z                   ← test yourself on covered material
 /end-session                      ← saves everything to disk
 /check-progress                   ← see all materials
+/summarize-chapter clean-code chapter: 1           ← markdown summary
+/summarize-chapter clean-code chapter: 1 format: pdf  ← markdown + PDF
 ```
 
 ---

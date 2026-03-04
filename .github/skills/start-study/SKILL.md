@@ -35,7 +35,9 @@ Read `.github/copilot-instructions.md` first for the full system behavior, activ
     Pending Qs  : <count of unresolved pendingQuestions>
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     ```
-4. If `structure[]` is empty or contains `tbd`, ask the user to paste the Table of Contents first, then populate `structure[]` and update `progress.totalUnits`.
+4. If `structure[]` is empty or contains `tbd`, ask the user to paste the Table of Contents first, then:
+    - Populate `structure[]` and update `progress.totalUnits` in `manifest.json`
+    - Update the structure table in `temp/Notes/<slug>/overview.md` — replace any placeholder rows with the real chapter/module titles and reset all statuses to `⬜ Not started`
 5. Ask: _"Continue from **[currentUnit]** or jump to a specific section?"_
 
 ---
