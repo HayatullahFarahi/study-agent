@@ -1,6 +1,6 @@
 {
-    "$schema": "alf-progress/v1",
-    "_comment": "Demo material — try /start-study demo right after cloning",
+    "$schema": "alf-progress/v2",
+    "_comment": "Demo material — say 'resume demo' to the Study Agent (or run /start-study demo). Progress is copied to temp/progress/demo/, this file stays pristine.",
     "id": "demo",
     "title": "AI Engineering Fundamentals — A Demo Article",
     "type": "article",
@@ -8,36 +8,42 @@
     "source": "demo/ai-engineering-intro/article.md",
     "sourceText": "demo/ai-engineering-intro/article.md",
     "addedOn": "2026-03-02",
-    "estimatedTotalUnits": 5,
     "structure": [
         {
             "id": "ch-1",
             "title": "AI Engineering Fundamentals",
+            "loc": "§ 1-5",
+            "lines": [1, 137],
             "sections": [
                 {
                     "id": "1.1",
                     "title": "The AI Engineering Stack",
-                    "pages": null
+                    "loc": "§ 1. The AI Engineering Stack",
+                    "lines": [1, 25]
                 },
                 {
                     "id": "1.2",
                     "title": "Foundation Models and Prompting",
-                    "pages": null
+                    "loc": "§ 2. Foundation Models and Prompting",
+                    "lines": [27, 42]
                 },
                 {
                     "id": "1.3",
                     "title": "Retrieval-Augmented Generation (RAG)",
-                    "pages": null
+                    "loc": "§ 3. Retrieval-Augmented Generation (RAG)",
+                    "lines": [44, 74]
                 },
                 {
                     "id": "1.4",
                     "title": "Evaluation and Testing",
-                    "pages": null
+                    "loc": "§ 4. Evaluation and Testing",
+                    "lines": [76, 102]
                 },
                 {
                     "id": "1.5",
                     "title": "From Prototype to Production",
-                    "pages": null
+                    "loc": "§ 5. From Prototype to Production + Summary",
+                    "lines": [104, 137]
                 }
             ]
         }
@@ -47,11 +53,13 @@
         "unitsCovered": 0,
         "percentComplete": 0,
         "currentUnit": "1.1",
-        "lastStudiedOn": null
+        "lastStudiedOn": null,
+        "resumePoint": null
     },
     "coveredUnits": [],
     "sessions": [],
     "keyConcepts": [],
     "pendingQuestions": [],
+    "quizzes": [],
     "notes": ""
 }

@@ -1,48 +1,34 @@
 ---
 name: deep-dive
-description: Start a standalone focused session on a specific topic or content block, independent of any material's linear progress. Does not advance currentUnit or percentComplete. Use when the user wants to deep-dive into a specific concept, chapter excerpt, or topic without affecting tracked progress.
-argument-hint: <topic> [in <material-slug>]
+description: "Focused, standalone session to deeply understand one concept or topic, optionally grounded in a registered material. Explains it the way engineers learn best: intuition, mechanism, runnable code, trade-offs, pitfalls, then check questions. Doesn't change tracked progress. Use when the user wants to understand, grasp, or master a specific concept, wants it explained for an engineer, or wants to explore a topic outside the linear study order."
+argument-hint: '<topic> [in <material-slug>]'
 ---
 
-# Spotlight Session — Standalone Focused Study
+# Deep Dive: Grasp One Concept
 
-Read `.github/copilot-instructions.md` for full behavior rules.
-
-A deep-dive session is **isolated** — it never modifies `currentUnit`, `percentComplete`, or `coveredUnits` in any manifest. Progress is logged only to `spotlight-log.md`.
+Follow the workspace conventions in `.github/copilot-instructions.md` (§5, §7). A deep-dive is isolated: it never changes `currentUnit`, `percentComplete`, `coveredUnits`, or `sessions[]`, and it's logged only to a spotlight log.
 
 ## Steps
 
-1. Parse the input:
-    - Topic: everything before `in <slug>` (or the full input if no `in` keyword)
-    - Linked material slug: the word after `in` (optional)
-2. If a slug is provided, read `temp/progress/<slug>/manifest.json` for context (covered units, key concepts) — use it to calibrate the explanation depth
-3. Print the deep-dive header:
-    ```
-    🔦 DEEP DIVE — <topic>
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Material : <title or "Standalone">
-    Focus    : <topic>
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    ```
-4. Ask: _"Paste the content you want to study, or should I explain **[topic]** from scratch?"_
-5. Enter **Active Teaching Mode** using the **creative format from §3.5** — scoped to the topic only
-6. Track concepts introduced in memory (`conceptsIntroducedThisSession`)
+1. **Parse** the input: the topic is everything before ` in <slug>`; the slug is optional. If a tracked session is active, offer to link the deep-dive to that material.
+2. **Find the source**:
+   - **With a material**: locate where it covers the topic (search the text the way `ask-material` does) and load those passages. Follow the author's framing with citations, and label any extras 💬.
+   - **Standalone**: general knowledge is the source. Say so in the header, stay accurate, and flag anything uncertain or version-dependent.
+3. **Print the header**:
 
-## On `/end-session`
+   ```
+   🔦 DEEP DIVE — <topic>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Source : <material title (locations)> or "Standalone (general knowledge)"
+   Level  : <ask: new to it · know the basics · want internals>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
 
-Append to `temp/progress/<slug>/spotlight-log.md` (or `temp/progress/spotlight-log.md` if standalone):
-
-```markdown
-## Spotlight — YYYY-MM-DD
-
-- **Topic**: <topic>
-- **Linked Material**: <title or "Standalone">
-- **Duration**: <estimated>
-- **Summary**: <1-2 sentences>
-- **Key Takeaways**:
-    - <concept 1>
-    - <concept 2>
-- **Questions Raised**: <logged questions or "none">
-```
-
-**Do NOT** modify `manifest.json` progress fields (`currentUnit`, `percentComplete`, `coveredUnits`).
+4. **Teach in layers**, and after each layer ask whether to go deeper:
+   1. **Intuition**: 🎯 why it exists, a 💡 analogy, and a one-sentence definition.
+   2. **Mechanism**: step by step with an ASCII diagram; math in KaTeX when relevant.
+   3. **In practice**: a minimal runnable example with comments, how it shows up in real systems, and its cost or complexity.
+   4. **Trade-offs and pitfalls**: when to use it, when not to, common mistakes, and alternatives compared in a table.
+   5. **Check**: 2–3 questions, including one applied scenario, with feedback.
+5. **Track** the concepts in `activeSession` (mode `spotlight`) and offer `/save-note` for the key insight.
+6. On `/end-session`, write the spotlight log entry (see `end-session`).

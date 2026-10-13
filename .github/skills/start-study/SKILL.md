@@ -1,127 +1,45 @@
 ---
 name: start-study
-description: Start or resume a full tracked learning session for a registered material. Use this when the user wants to begin or continue studying a book, course, slides, or article. Loads the manifest, prints session state, then enters active teaching mode with dynamic progress tracking.
-argument-hint: <material-slug> [or material name]
+description: 'Start or resume a tracked study session for a registered material (book, PDF, slides, video, course, or article), continuing exactly from the saved resume point. Teaches unit by unit from the source text with citations, checks understanding, and saves progress after every unit. Use when the user wants to study, continue, resume, pick up where they left off, or go to the next section. With no argument, resumes the most recently studied material.'
+argument-hint: '[material slug or name] [unit id, e.g. 3.2] — omit both to resume the last material'
 ---
 
-# Start or Resume a Tracked Learning Session
+# Start or Resume a Study Session
 
-Read `.github/copilot-instructions.md` first for the full system behavior, active teaching rules, dynamic tracking spec, and **creative explanation format (§3.5)**.
+Follow the workspace conventions in `.github/copilot-instructions.md`: §3 resolving a material, §5 locating text, §6 tracker protocol, §7 explanation block.
 
----
-
-## Design Principle
-
-> **The manifest tracks WHERE you are. The source material is WHAT you learn from. These are separate concerns.**
->
-> - `manifest.json` = progress state only (covered units, percent, session history, saved concepts)
-> - `learning-materials/<slug>/` = the actual book, slides, or article — the authoritative teaching source
-> - Teaching must ALWAYS be grounded in the source material, never in general knowledge alone
-
----
+> The manifest tracks **where** you are; the source text is **what** you learn. Never teach a registered material from notes, summaries, or general knowledge.
 
 ## Steps
 
-1. Resolve the slug from the user's input. Check `temp/progress/_index.json` if unsure.
-2. Read `temp/progress/<slug>/manifest.json` — for progress state only, not for content.
-3. Print the session header:
-    ```
-    ▶ SESSION STARTED — <Title>
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Type        : <type>
-    Progress    : <unitsCovered>/<totalUnits> (<percentComplete>%)
-    Last Studied: <lastStudiedOn>
-    Current Unit: <currentUnit>
-    Pending Qs  : <count of unresolved pendingQuestions>
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    ```
-4. If `structure[]` is empty or contains `tbd`, ask the user to paste the Table of Contents first, then:
-    - Populate `structure[]` and update `progress.totalUnits` in `manifest.json`
-    - Update the structure table in `temp/Notes/<slug>/overview.md` — replace any placeholder rows with the real chapter/module titles and reset all statuses to `⬜ Not started`
-5. Ask: _"Continue from **[currentUnit]** or jump to a specific section?"_
+1. **Resolve the material** (§3): a slug or name → match it; nothing or "resume" → the latest `lastStudiedOn`; `demo` → bootstrap the demo.
+2. **Read the manifest** for progress only. Add any missing v2 fields. If `structure` is empty, run `ingest-material` when a source exists, otherwise ask for the table of contents; then fill `structure`, `totalUnits`, and the overview rows.
+3. **Print the header**:
 
----
+   ```
+   ▶ SESSION — <Title>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Progress     : <unitsCovered>/<totalUnits> (<percent>%)  [████░░░░░░]
+   Last studied : <lastStudiedOn or "never">
+   Resume at    : <unit id> <unit title> — <resumePoint.loc> (<resumePoint.note>)
+   Pending Qs   : <unresolved count> · Weak areas: <from the last quiz, or "—">
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
 
-## Step 6 — Load Source Content Before Teaching
+4. **Ask once**: continue from the resume point, jump to a unit, or review first. If `temp/Notes/<slug>/summary/<slug>-ch<N>-summary.md` exists for the current chapter, offer "read the 2-minute summary first". If the last quiz listed review units, offer a quick review of those first.
+5. **Load the unit text** (§5): exactly the unit's line range. A `null` `resumePoint` means the start of `currentUnit`. When resuming mid-unit, find `resumePoint.loc` with `grep -n` and start reading there.
+6. **Take a concept inventory**: list every named concept, definition, framework, list, process, formula, comparison, and example the source introduces in this unit. Keep it as an internal `unitConcepts[]` checklist.
+7. **Teach** one concept at a time with the explanation block (§7), citing locations. After each concept, ask "Clear? Want an example, an analogy, or more depth?" Every three concepts, ask one quick check question. Answer side questions from the source the way `ask-material` does; park off-topic ones with `ask-later`.
+8. **Close the unit**: sweep `unitConcepts[]`, and give anything not yet covered at least a one-line 📌 callout. Then offer a three-question mini-quiz.
+9. **Checkpoint now** (§6): update `coveredUnits`, the progress numbers, `currentUnit`, `resumePoint` (start of the next unit), and the overview row (✅). Then say: "✓ Saved — <x>/<y> (<z>%). Next: <unit> — continue?"
+10. Repeat steps 5–9. Suggest `/end-session` after 45–60 minutes or at a chapter boundary. If the user stops mid-unit, set `resumePoint` to the exact position and run `end-session`.
 
-**Before teaching any unit**, resolve the source content using this decision tree:
+## By material type
 
-```
-manifest.sourceText set?
-      │ YES → read that .txt file directly → go to Step 7
-      │ NO  ↓
-manifest.source extension?
-      │ .md / .txt / .html → read directly → go to Step 7
-      │ .pdf / .pptx / .docx ↓
-            │
-      .txt counterpart already exists?
-      │ YES → read it → add manifest.sourceText → go to Step 7
-      │ NO  ↓
-            │
-      Run auto-conversion (see table below)
-      │ SUCCESS → save .txt, set manifest.sourceText → go to Step 7
-      │ FAIL    → ask user to paste section text → go to Step 7
-```
-
-**Auto-conversion commands** (replace `<src>` and `<out>` with actual absolute paths):
-
-| Format  | Install (if needed)        | Conversion command                                                                                                                                                                                                 |
-| ------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `.pdf`  | `pip install pdfminer.six` | `python -c "import pdfminer.high_level as p; open(r'<out>', 'w', encoding='utf-8').write(p.extract_text(r'<src>'))"`                                                                                               |
-| `.pptx` | `pip install python-pptx`  | `python -c "from pptx import Presentation; prs=Presentation(r'<src>'); open(r'<out>','w',encoding='utf-8').write('\n'.join(shp.text_frame.text for sl in prs.slides for shp in sl.shapes if shp.has_text_frame))"` |
-| `.docx` | `pip install python-docx`  | `python -c "from docx import Document; doc=Document(r'<src>'); open(r'<out>','w',encoding='utf-8').write('\n'.join(p.text for p in doc.paragraphs))"`                                                              |
-
-**Output path convention:** same directory as the original, same base name, `.txt` extension.
-
-- Example: `learning-materials/ai-engineering/AI-Engineering.pdf` → `learning-materials/ai-engineering/AI-Engineering.txt`
-
-**After a successful conversion:**
-
-1. Write the `.txt` path into `manifest.sourceText` in `temp/progress/<slug>/manifest.json`
-2. Confirm to the user: _"Converted **[filename]** to text and saved alongside the original. Future sessions will use the cached version."_
-
-**After loading content (any path above):**
-
-- Hold the loaded text as `activeUnitSource` for that unit only — do NOT reuse it across units
-- If `pages` is set on the section in `structure[]`, use that to locate the correct region
-- **NEVER use `temp/Notes/<slug>/` as a teaching source** — notes are read-only cross-reference only
-- The fallback _"Teaching from general knowledge"_ is **not permitted** — if source is unavailable and conversion failed, ask the user to paste it and wait
-
-**Rules for source-grounded teaching:**
-
-- **NEVER teach a unit without source content.** If the format is unreadable, auto-conversion failed, and the user has not yet pasted text, ask and wait — do not proceed.
-- Extract the `sectionConcepts[]` inventory from `activeUnitSource` exclusively, not from prior notes or general knowledge.
-
----
-
-## Step 7 — Enter Active Teaching Mode
-
-- **Before teaching each section, perform a concept inventory from the source:**
-    1. Scan `activeUnitSource` for every named concept, framework, model, technique, list, ladder, loop, or taxonomy the author introduces
-    2. Hold these as an internal `sectionConcepts[]` checklist
-    3. Teach each one using the §3.5 creative format (one concept at a time)
-    4. After finishing the section, sweep `sectionConcepts[]` — any concept not yet addressed gets at minimum a 📌 one-sentence callout before moving on
-    5. Only mark the section as covered when every item in `sectionConcepts[]` has been touched
-- **Use the creative format from §3.5** — always open with 🎯 Why It Matters, include an ASCII diagram, a 💡 Analogy, a 🔧 In Practice example, and close with 🧠 Mental Model
-- Ask a comprehension check every 3 concepts
-- Offer a 3-question mini-quiz after each major unit
-- Auto-track all covered units and concepts in memory (do NOT wait for user to say "mark as covered")
-- Flush to disk only on `/end-session` or when the user says "save progress"
-
-## Inline Save Triggers (during the session)
-
-| User says                | Action                                      |
-| ------------------------ | ------------------------------------------- |
-| "save" / "save progress" | Write covered units to manifest immediately |
-| `/note <text>`           | Save concept to `keyConcepts[]` immediately |
-| `/q <question>`          | Append to `pendingQuestions[]` immediately  |
-| "done with [unit]"       | Mark that unit as covered immediately       |
-
-## Type-specific Behavior
-
-| Type      | Approach                                                   |
-| --------- | ---------------------------------------------------------- |
-| `book`    | Chapter summaries first, then deep-dive section by section |
-| `course`  | Theory first, then practical exercises per module          |
-| `slides`  | Slide-by-slide, comprehension check after each group       |
-| `article` | Section summaries → key concepts → application discussion  |
+| Type      | How to teach                                                                                                                                                    | Cite as         |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `book`    | Section by section; open each chapter with three bullets on "what this chapter answers"                                                                         | `(p. N)`        |
+| `slides`  | One slide group at a time. Speaker notes carry the explanation and slide text is the outline. Don't guess what a visual shows unless the notes describe it.     | `(slide N)`     |
+| `video`   | One part or chapter at a time. Give a timestamp for every concept so the learner can re-watch it, and end each part with a 🎬 re-watch list of 2–3 key moments. | `(hh:mm:ss)`    |
+| `course`  | Module by module; theory first, then exercises or code                                                                                                          | file + location |
+| `article` | Section summary → key concepts → how to apply them                                                                                                              | `(§ Section)`   |
