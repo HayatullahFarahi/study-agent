@@ -1,216 +1,133 @@
 ---
 name: summarize-chapter
-description: Generate a creative visual summary of a single chapter from a registered learning material and save it to temp/Notes/<slug>/summary/. Use when the user wants a structured recap of a chapter with ASCII diagrams, analogies, and mental models. Does not update coveredUnits or session progress.
-argument-hint: <material-slug> chapter: <chapter-id> [format: pdf]
+description: 'Write a precise, easy-to-study summary of one chapter, section, slide group, or video part, or of an entire material. Grounded in the source text with page, slide, or timestamp citations, key terms, a diagram, and self-check questions. Saves Markdown (optional PDF) to temp/Notes/<slug>/summary/. Use when the user wants a summary, recap, cheat sheet, study guide, TL;DR, or overview of a book, chapter, deck, or video.'
+argument-hint: '<material-slug> chapter: <N> | unit: <id> | all [format: pdf]'
 ---
 
-# Summarize a Chapter from a Learning Material
+# Summarize a Chapter, Unit, or Whole Material
 
-Read `.github/copilot-instructions.md` first for the full system behavior and **creative explanation format (§3.5)**.
+Follow the workspace conventions in `.github/copilot-instructions.md` (§3 resolving a material, §5 locating text). Summaries are reference documents: they never change `coveredUnits` or progress.
 
-## Command
+## Arguments
 
-```
-/summarize-chapter {material-slug} chapter: {chapter-id} [format: pdf]
-```
+| Argument                 | Scope                                              |
+| ------------------------ | -------------------------------------------------- |
+| `chapter: <N>`           | structure `ch-N` and all its sections              |
+| `unit: <id>`             | one section or video part, for example `3.2`       |
+| `all`                    | every chapter, plus a full summary of the material |
+| `format: pdf` or `--pdf` | also render a PDF next to the Markdown             |
 
-**Alias**: `/summarize {chapter-id} in {material-slug} [--pdf]`
+Alias: `/summarize <id> in <slug> [--pdf]`.
 
-**Output format options:**
+## Steps (one chapter or unit)
 
-| Parameter     | Output                        | Default |
-| ------------- | ----------------------------- | ------- |
-| _(omitted)_   | `.md` markdown file           | ✅ yes  |
-| `format: pdf` | `.pdf` file (markdown → PDF)  | no      |
-| `--pdf`       | Same as `format: pdf` (alias) | no      |
+1. Resolve the material and find the unit(s) in `structure`.
+2. Load the source text for the range (§5). For ranges over ~1,500 lines, go section by section: read, take notes, move on.
+3. Take a **concept inventory** per section: every defined term, claim, framework, list, process, number, formula, example, and comparison. Each one gets at least one line in the summary, so nothing is silently dropped.
+4. Write the summary in the format below, following the precision rules.
+5. Save it as `temp/Notes/<slug>/summary/<slug>-ch<N>-summary.md`, or `<slug>-<unit-id>-summary.md` for a single unit (for example `ddia-3.2-summary.md`).
+6. If a PDF was requested, run the PDF step.
+7. Confirm the path(s), then offer: a quiz on it (`/quiz-me <slug> chapter: <N>`), questions about it, or studying it.
 
-When `format: pdf` is given, the `.md` file is **also kept** as the source — the PDF is generated alongside it.
+## Precision rules
 
----
+- Every key idea carries a citation: `(p. 23)`, `(slide 7)`, `(00:42:10)`, `(§ Section)`.
+- Keep the author's terms, definitions, numbers, list items, and their order. Quote short phrases (20 words or fewer) when the wording matters.
+- Plain language first. Define jargon at first use and expand every acronym on first use.
+- Label anything not from the source (analogies, extra examples) with 💬.
+- Length: roughly one page per 10–15 source pages, 10 slides, or 10 minutes of video. Never pad.
+- If the source text can't be loaded, write the structure only, mark it "⏳ Not summarized: source text unavailable", and ask the user to paste the text. Never invent content.
 
-## Steps
+## Summary format
 
-1. Resolve the slug from the user's input. Check `temp/progress/_index.json` if unsure.
-2. Detect the requested output format — look for `format: pdf` or `--pdf` in the command. Store as `outputFormat = "pdf" | "md"` (default `"md"`).
-3. Read `temp/progress/<slug>/manifest.json` to find the chapter entry in `structure[]`.
-4. Identify all sections under that chapter from the manifest.
-5. Check `coveredUnits[]` — note which sections are already covered vs. not yet studied.
-6. Generate a **creative visual summary** of the chapter (see Format Rules below).
-7. Save the `.md` summary file to:
-    ```
-    temp/Notes/<slug>/summary/<slug>-ch<chapter-id>-summary.md
-    ```
-    Use `temp/Notes/standalone/summary/ch<chapter-id>-summary.md` if no slug is known.
-8. If `outputFormat == "pdf"`: run the **PDF conversion procedure** (see below) to produce:
-    ```
-    temp/Notes/<slug>/summary/<slug>-ch<chapter-id>-summary.pdf
-    ```
-9. Confirm the save path(s) to the user.
-10. Ask: _"Want me to quiz you on this chapter, or continue to the next section?"_
+```markdown
+# <Chapter or unit id> — <Title>
 
----
+> <Material title> · <loc> · Summarized <YYYY-MM-DD> · Source-grounded
 
-## PDF Conversion Procedure
+## ⚡ TL;DR
 
-Run when `format: pdf` or `--pdf` is present. Always generate the `.md` file first, then convert.
-
-**Step 1 — Check / install dependencies:**
-
-```bash
-pip install markdown weasyprint
-```
-
-> `markdown` converts the `.md` to HTML; `weasyprint` renders the HTML to PDF with CSS styling. No LaTeX or external binaries required.
-
-**Step 2 — Convert:**
-
-Replace `<md_path>` and `<pdf_path>` with the actual absolute file paths:
-
-```python
-python -c "
-import markdown, pathlib
-from weasyprint import HTML, CSS
-
-md_path  = r'<md_path>'
-pdf_path = r'<pdf_path>'
-
-md_text = pathlib.Path(md_path).read_text(encoding='utf-8')
-html_body = markdown.markdown(md_text, extensions=['tables', 'fenced_code'])
-
-full_html = '''
-<!DOCTYPE html><html><head><meta charset=\"utf-8\">
-<style>
-  body  { font-family: Segoe UI, sans-serif; margin: 40px; color: #1a1a1a; }
-  h1,h2 { color: #2c3e50; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
-  pre   { background: #f4f4f4; padding: 12px; border-radius: 4px; font-size: 0.85em; }
-  code  { background: #f0f0f0; padding: 2px 4px; border-radius: 3px; }
-  table { border-collapse: collapse; width: 100%%; }
-  th,td { border: 1px solid #ccc; padding: 6px 10px; }
-  th    { background: #eaf0fb; }
-  blockquote { border-left: 4px solid #aaa; margin-left: 0; padding-left: 12px; color: #555; }
-</style></head><body>''' + html_body + '''</body></html>'''
-
-HTML(string=full_html).write_pdf(pdf_path)
-print('PDF saved:', pdf_path)
-"
-```
-
-**Step 3 — Error handling:**
-
-| Error                       | Resolution                                                                                          |
-| --------------------------- | --------------------------------------------------------------------------------------------------- |
-| `ModuleNotFoundError`       | Run `pip install markdown weasyprint` and retry                                                     |
-| `OSError` on weasyprint     | May need `pip install weasyprint --upgrade`; on Windows also try `pip install weasyprint cairocffi` |
-| Garbled PDF / missing fonts | Add `font-family: Arial, sans-serif` to the CSS block                                               |
-| Emoji missing in PDF        | This is a known weasyprint limitation — emoji appear as boxes; the `.md` file always preserves them |
-
-> If conversion fails after one retry attempt, confirm the `.md` was saved and inform the user that PDF generation failed with the error message, then ask if they want to try a different converter (e.g. Pandoc).
-
----
-
-## Format Rules
-
-Every chapter summary **must** follow this structure — no plain prose summaries allowed:
-
-```
-# Chapter <N> — <Title>
-> <Material Title> | Creative Summary | <YYYY-MM-DD>
-
----
+- <3–5 bullets: the chapter's main claims, each with a citation>
 
 ## 🗺️ Big Picture
-[1 ASCII comparison table or paradigm shift diagram showing the chapter's core idea]
+
+<one ASCII diagram or table showing how the chapter's ideas connect>
+
+## 🔑 Key Ideas
+
+### 1. <Idea> (p. 23)
+
+**What it is**: <precise definition or claim, in plain words>
+**Why it matters**: <one sentence>
+**How it works**: <steps, mechanism, or formula, only if the source describes one>
+**Example**: <from the source, or a 💬 tutor example>
+⚠️ <limitation or pitfall, if the source names one>
+
+### 2. …
+
+## 📖 Key Terms
+
+| Term | Meaning in this chapter | Where |
+| ---- | ----------------------- | ----- |
+
+## 🔗 Connections
+
+- **Builds on**: <earlier chapter or concept> · **Leads to**: <later chapter or concept>
+
+## ✅ Self-Check
+
+<details><summary>1. <question></summary>
+
+<answer, with citation>
+
+</details>
+
+<!-- 3–5 questions: recall, understanding, application -->
+
+## 🧠 Mental Model
+
+> <one sentence that captures the chapter>
 
 ---
 
-## <section-id> — <Section Title>
-[For each section in the chapter:]
-
-📌 Key Concept: <name>
-[Core explanation — 2-4 sentences]
-
-[ASCII diagram if the concept involves structure, flow, or comparison]
-
-💡 Analogy: [1-2 sentence real-world parallel]
-
-⚠️ Common Mistake (if applicable): [1 sentence]
-
-🔧 In Practice (if applicable): [code snippet or real usage]
-
----
-
-## 🧠 Chapter <N> — One-Sentence Mental Model
-> [One sticky-note sentence that captures the whole chapter]
-
----
-*Covered: §<ids> | Summarized: <YYYY-MM-DD>*
+_Source: <material title>, <loc> · Units: <ids>_
 ```
 
-**Acronym expansion rule:**
+- **Videos**: add `## 🎬 Re-watch` after Key Ideas, with 3–5 key moments as `hh:mm:ss — what happens`.
+- **Slides**: cite slide numbers and say when a point comes from the speaker notes.
+- **Engineering content**: may add `## 🔧 In Practice` with a short annotated code example or real-world usage (label it 💬 if it's not from the source).
 
-Every time an acronym or abbreviation is used in a summary, **always write the full form first**, followed by the short form in parentheses — or the short form followed by the full form in parentheses on first use. Examples:
+## `all`: summarize the whole material
 
-- ✅ `Supervised Finetuning (SFT)`
-- ✅ `Reinforcement Learning from Human Feedback (RLHF)`
-- ✅ `Mixture of Experts (MoE)`
-- ❌ `SFT` alone — never use a bare acronym without expanding it at least once per summary
+1. Confirm first: "This will summarize <N> chapters (~<pages or hours>). Continue?"
+2. For each chapter without an up-to-date summary file, run one subagent at a time with #tool:agent/runSubagent. Give it the material title and slug, the chapter id, title, and loc, the text path and line range, this skill file to follow, the save path, and the instruction "return only the TL;DR bullets and five key terms".
+3. Write `temp/Notes/<slug>/summary/<slug>-full-summary.md`:
 
-On **subsequent uses** within the same section block, the short form alone is fine.
+   ```markdown
+   # <Title> — Full Summary
 
----
+   > <type> · <length> · Summarized <YYYY-MM-DD>
 
-**Concept inventory rule (prevents gaps without inflating length):**
+   ## ⚡ The whole material in 5 bullets
 
-Before writing each section block:
+   ## 🗺️ Map
 
-1. List every named concept, framework, model, technique, ladder, loop, taxonomy, or comparison table the author introduces in that section — hold this as `sectionConcepts[]`
-2. Write the summary block, covering each item in `sectionConcepts[]`
-3. Any concept not given a full block gets at minimum a 📌 one-liner so it is not invisible
-4. Do **not** add more depth per concept — keep the same tight format. The goal is zero omissions, not longer entries.
+   | #   | Chapter | One-line takeaway | Summary                         |
+   | --- | ------- | ----------------- | ------------------------------- |
+   | 1   | <title> | <takeaway>        | [read](./<slug>-ch1-summary.md) |
 
-**Visual tools required:**
+   ## 🔑 Core ideas across chapters (5–10, each with chapter references)
 
-| Tool                   | Required when                                   |
-| ---------------------- | ----------------------------------------------- |
-| ASCII diagram          | Any concept with structure, flow, or comparison |
-| Comparison table       | Contrasting 2+ ideas or before/after paradigms  |
-| Code block             | Any programmatic or API-related concept         |
-| KaTeX math ($formula$) | Equations, metrics, probability                 |
-| 💡 Analogy             | Every abstract concept                          |
-| ⚠️ Common Mistake      | Whenever a frequent misunderstanding exists     |
+   ## 🧭 Suggested study path (what to read first or skip, for the user's goal)
+   ```
 
----
+4. Fill the "Key Themes" section of `temp/Notes/<slug>/overview.md`.
 
-## Behavior Rules
+## PDF step
 
-- If the chapter has **not been studied yet** (no sections in `coveredUnits[]`), add a notice at the top:
-    > ⚠️ _This chapter has not been studied yet. This summary is based on the book's structure — paste chapter content for a deeper summary._
-- If the chapter is **partially covered**, note which sections are summarized from study vs. inferred from structure.
-- **Never fabricate content** for uncovered sections — write structure-only placeholders and prompt user to paste the content.
-- The summary file is a **standalone artifact** — it must make sense without the manifest or session log.
-- Do **not** update `coveredUnits[]` or session progress — this is a reference document, not a tracked session.
+```bash
+.venv/bin/python -m pip install markdown weasyprint   # once; macOS also needs: brew install pango
+.venv/bin/python .github/skills/summarize-chapter/scripts/md_to_pdf.py "<summary.md>"
+```
 
----
-
-## Output File Naming
-
-| Scenario                          | Markdown path                                        | PDF path (if `format: pdf`)                           |
-| --------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
-| Active session, material known    | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.md` | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.pdf` |
-| No active session, material known | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.md` | `temp/Notes/<slug>/summary/<slug>-ch<id>-summary.pdf` |
-| Standalone (no material linked)   | `temp/Notes/standalone/summary/ch<id>-summary.md`    | `temp/Notes/standalone/summary/ch<id>-summary.pdf`    |
-
-The `.md` file is **always** written first and kept — the PDF is an additional artifact alongside it.
-
----
-
-## Quick Reference
-
-| Command                                                    | Action                                          |
-| ---------------------------------------------------------- | ----------------------------------------------- |
-| `/summarize-chapter ai-engineering chapter: 1`             | Summarize Chapter 1 — markdown output           |
-| `/summarize-chapter ai-engineering chapter: 1 format: pdf` | Summarize Chapter 1 — markdown + PDF output     |
-| `/summarize-chapter ai-engineering chapter: 1 --pdf`       | Same as above (shorthand)                       |
-| `/summarize ch-2 in ai-engineering`                        | Alias form — markdown output                    |
-| `/summarize ch-2 in ai-engineering --pdf`                  | Alias form — markdown + PDF output              |
-| `/summarize-chapter ml-a-z chapter: 3`                     | Summarize Chapter 3 of ML A-Z — markdown output |
+[md_to_pdf.py](./scripts/md_to_pdf.py) writes `<summary>.pdf` next to the Markdown, which stays the master copy, and never fetches external resources. Emoji may render as boxes (a WeasyPrint limitation). If rendering still fails after one retry, keep the `.md`, report the error, and suggest VS Code's Markdown preview as an alternative.

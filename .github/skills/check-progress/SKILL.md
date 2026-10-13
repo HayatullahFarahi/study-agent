@@ -1,38 +1,38 @@
 ---
 name: check-progress
-description: Show learning progress across all registered materials, or detailed progress for a single material. Reads all manifests and _index.json to display progress percentages, last studied dates, current units, and pending questions. Use when the user wants to check how far they are or review saved questions.
-argument-hint: [material-slug] (omit to see all materials)
+description: "Show study progress across all registered materials, or details for one: percent complete, exact resume point, last studied date, quiz scores and weak areas, available summaries, and pending questions. Use when the user asks about progress, status, what's next, where they left off, or wants to review saved questions."
+argument-hint: '[material-slug] (omit to see all materials)'
 ---
 
 # Show Learning Progress
 
-Read `.github/copilot-instructions.md` for full behavior rules.
+Follow the workspace conventions in `.github/copilot-instructions.md` (§3, §4).
 
-## Without a slug — show all materials
+## All materials (no slug)
 
-1. Read `temp/progress/_index.json` for the list of registered materials
-2. For each slug, read `temp/progress/<slug>/manifest.json`
-3. Display:
-    ```
-    ╔══════════════════════════════════════════════════════════╗
-    ║                 study-agent — Progress                   ║
-    ╠══════════════════════╦══════════╦════════════╦═══════════╣
-    ║ Material             ║ Type     ║  Progress  ║ Last      ║
-    ╠══════════════════════╬══════════╬════════════╬═══════════╣
-    ║ <title>              ║ <type>   ║  x/y (z%)  ║ <date>    ║
-    ╚══════════════════════╩══════════╩════════════╩═══════════╝
-    ```
+1. Read `temp/progress/_index.json` (bootstrap it if missing), then each manifest.
+2. Show them, most recently studied first:
 
-## With a slug — show detailed progress
+   ```
+   📚 Study Progress
+   | Material | Type | Progress | Resume at | Last studied |
+   |---|---|---|---|---|
+   | <title> | <type> | ████░░░░░░ 42% (5/12) | 2.3 · p. 87 | 2026-10-12 |
+   ```
 
-1. Read `temp/progress/<slug>/manifest.json`
-2. Display:
-    - Title, type, format
-    - Progress bar: `[████████░░] 80%`
-    - `unitsCovered` / `totalUnits`
-    - `currentUnit` (next to study)
-    - `lastStudiedOn`
-    - List of `coveredUnits[]`
-    - Count and list of `keyConcepts[]`
-    - Each unresolved entry in `pendingQuestions[]`, numbered
-3. After listing pending questions (if any), ask: _"Want to tackle any of these now?"_ — if yes, answer the question, then offer to mark it `resolved: true` in the manifest.
+3. Suggest: "Resume **<most recent>**? (`/start-study`)"
+
+## One material (with slug)
+
+1. Read the manifest and list the files in `temp/Notes/<slug>/summary/`.
+2. Show:
+   - Title, type, format, and source
+   - Progress bar `[████████░░] 80%` and `<covered>/<total>` units
+   - **Resume point**: unit, title, location, and note
+   - Units per chapter as ✅ covered, 🟡 in progress, or ⬜ not started (compact)
+   - The last 3 sessions: date, units, one-line summary
+   - Quizzes: recent scores and weak areas
+   - Available summaries (as links)
+   - Saved key concepts: count and the last 5
+   - Unresolved `pendingQuestions[]`, numbered
+3. If there are pending questions, ask: "Want to tackle any of these now?" Answer the chosen one with `ask-material`, then mark it `"resolved": true`.

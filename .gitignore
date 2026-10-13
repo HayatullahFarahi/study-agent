@@ -5,6 +5,11 @@ learning-materials/
 # Copilot progress tracking state — local only
 temp/
 
+# Generated text/outlines from ingest-material, and the Python env for the scripts
+_extracted/
+.venv/
+__pycache__/
+
 # ─── Common ──────────────────────────────────────────────────────────────────
 .dist/
 node_modules/

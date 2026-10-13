@@ -1,0 +1,25 @@
+{
+    "$schema": "alf-progress/v2",
+    "id": "",
+    "title": "",
+    "type": "",
+    "format": "",
+    "source": "",
+    "sourceText": null,
+    "addedOn": "",
+    "structure": [],
+    "progress": {
+        "totalUnits": 0,
+        "unitsCovered": 0,
+        "percentComplete": 0,
+        "currentUnit": null,
+        "lastStudiedOn": null,
+        "resumePoint": null
+    },
+    "coveredUnits": [],
+    "sessions": [],
+    "keyConcepts": [],
+    "pendingQuestions": [],
+    "quizzes": [],
+    "notes": ""
+}
